@@ -40,16 +40,16 @@ const update = catchError(async(req, res) => {
     return res.json(result[1][0]);
 });
 
-const login = catchError(async(req, res)=>{
-  const {email, password} = req.body;
-  const user = await User.findOne({where: {email: email}});
-  if(!user)return res.status(401).json({message: "User not found"});
-  
-  const isValid = await bcrypt.compare(password, user.password);
-  if(!isValid)return res.status(401);
+const login = catchError(async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ where: { email: email } });
+    if (!user) return res.status(401).json({ message: "User not found" });
 
-  const token = jwt.sign({user}, process.env.TOKEN, {expiresIn: '1d'})
-  return res.status(200).json({user: user, token: token})
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) return res.status(401);
+
+    const token = jwt.sign({ user }, process.env.TOKEN, { expiresIn: '1d' })
+    return res.status(200).json({ user: user, token: token })
 });
 
 module.exports = {
