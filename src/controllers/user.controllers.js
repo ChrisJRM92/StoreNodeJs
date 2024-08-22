@@ -32,12 +32,15 @@ const remove = catchError(async(req, res) => {
 
 const update = catchError(async(req, res) => {
     const { id } = req.params;
+    delete req.body.password;
+    delete req.body.email;
+    delete req.body.phone;
     const result = await User.update(
         req.body,
         { where: {id}, returning: true }
     );
     if(result[0] === 0) return res.sendStatus(404);
-    return res.json(result[1][0]);
+    return res.status(200).json(result[1][0]);
 });
 
 const login = catchError(async (req, res) => {
@@ -46,7 +49,7 @@ const login = catchError(async (req, res) => {
     if (!user) return res.status(401).json({ message: "User not found" });
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) return res.status(401);
+    if (!isValid) return res.sendStatus(401);
 
     const token = jwt.sign({ user }, process.env.TOKEN, { expiresIn: '1d' })
     return res.status(200).json({ user: user, token: token })
