@@ -6,11 +6,10 @@ require('../models')
 let TOKEN
 let productID
 let product
+let categoryId
 
 const BASE_URL = '/api/v1/products';
 const BASE_URL_LOGIN = '/api/v1/users/login'
-
-
 
 beforeAll(async()=>{
   const user = {
@@ -22,6 +21,7 @@ beforeAll(async()=>{
   console.log(TOKEN)
 
   const category = await Category.create({name: "ropa jean"})
+  categoryId = category.id
 
   product = {
     title: "Adidas X8",
@@ -30,6 +30,10 @@ beforeAll(async()=>{
     categoryId: category.id
   };
 
+});
+
+afterAll(async () => {
+  await Category.destroy({ where: { id: categoryId } });
 });
 
 test("GetAll --> '/products' should return status code 200", async()=>{
@@ -61,7 +65,7 @@ test("Put -->'/products/id' should return status code 200", async()=>{
   }
 
   const res = await supertest(app).put(`${BASE_URL}/${productID}`).send(productUpdate).set('Authorization', `Bearer ${TOKEN}`)
-  console.log(res.body)
+  // console.log(res.body)
   
   expect(res.status).toBe(200);
   expect(res.body).toBeDefined();
