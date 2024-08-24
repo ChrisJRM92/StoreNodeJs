@@ -18,7 +18,7 @@ beforeAll(async()=>{
   };
   const res = await supertest(app).post(`${BASE_URL_LOGIN}`).send(user);
   TOKEN = res.body.token
-  console.log(TOKEN)
+  // console.log(TOKEN)
 
   const category = await Category.create({name: "ropa jean"})
   categoryId = category.id
@@ -36,19 +36,20 @@ afterAll(async () => {
   await Category.destroy({ where: { id: categoryId } });
 });
 
-test("GetAll --> '/products' should return status code 200", async()=>{
-  const res = await supertest(app).get(BASE_URL)
-  // console.log(res);
-
-  expect(res.status).toBe(200);
-});
-
 test("Create Post --> '/products' should return status code 201", async()=>{
   const res = await supertest(app).post(BASE_URL).send(product).set('Authorization', `Bearer ${TOKEN}`);
   // console.log(res);
   productID = res.body.id
 
   expect(res.status).toBe(201);
+});
+
+test("GetAll --> '/products' should return status code 200", async()=>{
+  const res = await supertest(app).get(BASE_URL)
+  // console.log(res);
+
+  expect(res.status).toBe(200);
+  expect(res.body[0].id).toBe(productID)
 });
 
 test("GetOne Get -->'/products/id' should return status code 200", async()=>{

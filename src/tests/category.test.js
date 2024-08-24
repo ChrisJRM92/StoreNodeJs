@@ -21,14 +21,7 @@ beforeAll(async()=>{
   // console.log(TOKEN)
 });
 
-test("GEtAll Public --> '/categories' should return status code 200", async()=>{
-  const res = await supertest(app).get(BASE_URL);
-  
-  expect(res.status).toBe(200);
-  expect(res.body).toBeDefined();
-});
-
-test("Post Private --> '/categories' should return status code 201", async()=>{
+test("Create Post Private --> '/categories' should return status code 201", async()=>{
   const res = await supertest(app).post(BASE_URL).send(category).set('Authorization', `Bearer ${TOKEN}`);
 
   categoryId = res.body.id;
@@ -36,6 +29,13 @@ test("Post Private --> '/categories' should return status code 201", async()=>{
   expect(res.status).toBe(201);
   expect(res.body).toBeDefined();
   expect(res.body.name).toBe(category.name);
+});
+
+test("GEtAll Public --> '/categories' should return status code 200", async()=>{
+  const res = await supertest(app).get(BASE_URL);
+  
+  expect(res.status).toBe(200);
+  expect(res.body).toBeDefined();
 });
 
 test("Delete Private --> '/categories' should return status code 200", async()=>{
