@@ -5,13 +5,13 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config();
 
 
-
-const getAll = catchError(async(req, res) => {
-    const results = await User.findAll();
+const getAll = catchError(async (req, res) => {
+    const userId = req.body.id
+    const results = await User.findAll({where: {userId: userId}});
     return res.json(results);
 });
 
-const create = catchError(async(req, res) => {
+const create = catchError(async (req, res) => {
     const result = await User.create(req.body);
     return res.status(201).json(result);
 });
@@ -23,23 +23,23 @@ const create = catchError(async(req, res) => {
 //     return res.json(result);
 // });
 
-const remove = catchError(async(req, res) => {
+const remove = catchError(async (req, res) => {
     const { id } = req.params;
-    const result = await User.destroy({ where: {id} });
-    if(!result) return res.sendStatus(404);
+    const result = await User.destroy({ where: { id } });
+    if (!result) return res.sendStatus(404);
     return res.sendStatus(204);
 });
 
-const update = catchError(async(req, res) => {
+const update = catchError(async (req, res) => {
     const { id } = req.params;
     delete req.body.password;
     delete req.body.email;
     delete req.body.phone;
     const result = await User.update(
         req.body,
-        { where: {id}, returning: true }
+        { where: { id }, returning: true }
     );
-    if(result[0] === 0) return res.sendStatus(404);
+    if (result[0] === 0) return res.sendStatus(404);
     return res.status(200).json(result[1][0]);
 });
 

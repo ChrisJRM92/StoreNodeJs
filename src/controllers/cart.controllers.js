@@ -1,35 +1,69 @@
 const catchError = require('../utils/catchError');
 const Cart = require('../models/Cart');
+const Product = require('../models/Product');
+const Category = require('../models/Category');
 
 const getAll = catchError(async(req, res) => {
-    const results = await Cart.findAll();
+    console.log(req)
+    const userId = req.user.id
+    const results = await Cart.findAll({where:{userId: userId}, include: [{
+        model: Product,
+        attributes:{exclude: ['createdAt', 'updatedAt']},
+        include: [{
+            model: Category,
+            attributes: ['name']
+        }]
+
+    }]});
     return res.json(results);
 });
 
 const create = catchError(async(req, res) => {
-    const result = await Cart.create(req.body);
+    // console.log(req.body)
+    const userId = req.user.id
+    const {productId, quantity} = req.body
+    const body = {userId, productId, quantity}
+    const result = await Cart.create(body);
     return res.status(201).json(result);
 });
 
+// const create = catchError(async(req, res) => {
+//     const userId = req.user.id
+//     const result = await Cart.create(...req.body, userId);
+//     return res.status(201).json(result);
+// });
+
 const getOne = catchError(async(req, res) => {
+    const userId = req.user.id
     const { id } = req.params;
-    const result = await Cart.findByPk(id);
+    const result = await Cart.findByPk(id, {where:{userId: userId}, include: [{
+        model: Product,
+        attributes:{exclude: ['createdAt', 'updatedAt']},
+        include: [{
+            model: Category,
+            attributes: ['name']
+        }]
+
+    }]});
     if(!result) return res.sendStatus(404);
     return res.json(result);
 });
 
 const remove = catchError(async(req, res) => {
+    const userId = req.user.id
     const { id } = req.params;
-    const result = await Cart.destroy({ where: {id} });
+    const result = await Cart.destroy({ where: {id, userId} });
     if(!result) return res.sendStatus(404);
     return res.sendStatus(204);
 });
 
 const update = catchError(async(req, res) => {
+    const userId = req.user.id
+    const {quantity} = req.body
     const { id } = req.params;
     const result = await Cart.update(
-        req.body,
-        { where: {id}, returning: true }
+        {quantity},
+        { where: {id, userId}, returning: true }
     );
     if(result[0] === 0) return res.sendStatus(404);
     return res.json(result[1][0]);

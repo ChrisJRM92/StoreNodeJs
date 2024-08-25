@@ -5,12 +5,13 @@ const routerProduct = require('./product.router');
 const routerCart = require('./cart.router');
 const routerPurchase = require('./purchase.router');
 const routerProductimg = require('./productimg.router');
+const { verifyJwt } = require('../utils/verifyJWT');
 const router = express.Router();
 
 router.use('/users', routerUsers)
 router.use('/categories', routerCategory)
 router.use('/products', routerProduct)
-router.use('/cart', routerCart)
+router.use('/cart', verifyJwt, routerCart) //🔐
 router.use('/purchase', routerPurchase)
 router.use('/productimg', routerProductimg)
 

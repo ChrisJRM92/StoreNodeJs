@@ -7,7 +7,9 @@
     "reset:migrate": "node src/tests/resetDatabase.js",
     "pretest": "npm run reset:migrate",
     "test": "jest --detectOpenHandles",
-    "posttest": "node src/tests/postTest.js"
+    "posttest": "node src/tests/postTest.js",
+    "reset": "node src/utils/resetDB.js",
+    "create": "node src/utils/createUsers.js"
   },
   "keywords": [],
   "author": "",
