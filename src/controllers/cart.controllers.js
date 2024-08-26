@@ -3,26 +3,28 @@ const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 
-const getAll = catchError(async(req, res) => {
+const getAll = catchError(async (req, res) => {
     // console.log(req)
     const userId = req.user.id
-    const results = await Cart.findAll({where:{userId: userId}, include: [{
-        model: Product,
-        attributes:{exclude: ['createdAt', 'updatedAt']},
-        include: [{
-            model: Category,
-            attributes: ['name']
-        }]
+    const results = await Cart.findAll({
+        where: { userId: userId }, include: [{
+            model: Product,
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+            include: [{
+                model: Category,
+                attributes: ['name', 'id']
+            }]
 
-    }]});
+        }]
+    });
     return res.json(results);
 });
 
-const create = catchError(async(req, res) => {
+const create = catchError(async (req, res) => {
     // console.log(req.body)
     const userId = req.user.id
-    const {productId, quantity} = req.body
-    const body = {userId, productId, quantity}
+    const { productId, quantity } = req.body
+    const body = { productId, quantity, userId }
     const result = await Cart.create(body);
     return res.status(201).json(result);
 });
@@ -33,39 +35,41 @@ const create = catchError(async(req, res) => {
 //     return res.status(201).json(result);
 // });
 
-const getOne = catchError(async(req, res) => {
+const getOne = catchError(async (req, res) => {
     const userId = req.user.id
     const { id } = req.params;
-    const result = await Cart.findByPk(id, {where:{userId: userId}, include: [{
-        model: Product,
-        attributes:{exclude: ['createdAt', 'updatedAt']},
-        include: [{
-            model: Category,
-            attributes: ['name']
-        }]
+    const result = await Cart.findByPk(id, {
+        where: { userId: userId }, include: [{
+            model: Product,
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+            include: [{
+                model: Category,
+                attributes: ['name']
+            }]
 
-    }]});
-    if(!result) return res.sendStatus(404);
+        }]
+    });
+    if (!result) return res.sendStatus(404);
     return res.json(result);
 });
 
-const remove = catchError(async(req, res) => {
+const remove = catchError(async (req, res) => {
     const userId = req.user.id
     const { id } = req.params;
-    const result = await Cart.destroy({ where: {id, userId} });
-    if(!result) return res.sendStatus(404);
+    const result = await Cart.destroy({ where: { id, userId } });
+    if (!result) return res.sendStatus(404);
     return res.sendStatus(204);
 });
 
-const update = catchError(async(req, res) => {
+const update = catchError(async (req, res) => {
     const userId = req.user.id
-    const {quantity} = req.body
+    const { quantity } = req.body
     const { id } = req.params;
     const result = await Cart.update(
-        {quantity},
-        { where: {id, userId}, returning: true }
+        { quantity },
+        { where: { id, userId }, returning: true }
     );
-    if(result[0] === 0) return res.sendStatus(404);
+    if (result[0] === 0) return res.sendStatus(404);
     return res.json(result[1][0]);
 });
 

@@ -22,8 +22,8 @@ User.hasMany(Purchase)
 Purchase.belongsTo(User)
 
 //Purchase --> productId
-Purchase.hasMany(Product)
-Product.belongsTo(Purchase)
+Purchase.belongsTo(Product)
+Product.hasMany(Purchase)
 
 //ProductImg --> productId
 ProductImg.belongsTo(Product)

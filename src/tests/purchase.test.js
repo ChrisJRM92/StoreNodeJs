@@ -16,6 +16,7 @@ let purchaseId;
 
 const BASE_URL = '/api/v1/purchase';
 const BASE_URL_LOGIN = '/api/v1/users/login';
+const BASE_URL_CART = '/api/v1/cart';
 
 beforeAll(async()=>{
   const user = {
@@ -54,6 +55,30 @@ beforeAll(async()=>{
   cartId = cartCreate.id
 });
 
-test("Create Post --> '/purchase' should return 200", async()=>{
+test("Create Post --> '/purchase' should return 201", async()=>{
+  const res = await supertest(app).post(BASE_URL).send().set('Authorization', `Bearer ${TOKEN}`);
 
+  expect(res.status).toBe(201);
+  console.log(res.body);
 });
+
+test("GetAll Get --> '/purchase' should return 200", async()=>{
+  const res = await supertest(app).get(BASE_URL).set('Authorization', `Bearer ${TOKEN}`);
+  purchaseId = res.body.id
+
+  expect(res.status).toBe(200);
+  expect(res.body).toBeDefined();
+  expect(res.body.id).toBe(purchaseId);
+  expect(res.body[0].productId).toBe(productId);
+  expect(res.body[0].product.categoryId).toBe(categoryId);
+  expect(res.body[0].product.category.id).toBe(categoryId);
+  console.log(res.body[0]);
+});
+
+test("Cart Empy --> '/cart' should empy array, status code 200", async()=>{
+  const res = await supertest(app).get(BASE_URL_CART).set('Authorization', `Bearer ${TOKEN}`);
+
+  expect(res.status).toBe(200);
+  expect(res.body).toHaveLength(0);
+  expect(res.body).toEqual([]);
+})
