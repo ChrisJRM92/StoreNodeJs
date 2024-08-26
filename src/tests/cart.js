@@ -2,6 +2,7 @@ const supertest = require("supertest");
 const app = require("../app");
 const Category = require("../models/Category");
 const Product = require("../models/Product");
+const Cart = require("../models/Cart");
 require('../models');
 
 const BASE_URL = '/api/v1/cart';
@@ -39,8 +40,13 @@ beforeAll(async()=>{
   const productCreate = await Product.create(product);
   productId = productCreate.id;
   // console.log(productCreate)
-})
+});
 
+afterAll(async () => {
+  await Category.destroy({ where: { id: categoryId } });
+  await Product.destroy({where: {id: productId}});
+  await Cart.destroy({where: {id: cartId}})
+});
 
 test("Create Post --> '/cart' should return 201",async()=>{
   const createData = {
