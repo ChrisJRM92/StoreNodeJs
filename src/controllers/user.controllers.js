@@ -6,8 +6,8 @@ require('dotenv').config();
 
 
 const getAll = catchError(async (req, res) => {
-    const userId = req.body.id
-    const results = await User.findAll({where: {userId: userId}});
+    // const userId = req.body.id
+    const results = await User.findAll();
     return res.json(results);
 });
 
