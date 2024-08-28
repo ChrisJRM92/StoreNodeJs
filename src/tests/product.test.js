@@ -38,7 +38,7 @@ afterAll(async () => {
 
 test("Create Post --> '/products' should return status code 201", async()=>{
   const res = await supertest(app).post(BASE_URL).send(product).set('Authorization', `Bearer ${TOKEN}`);
-  console.log(res);
+  // console.log(res);
   productID = res.body.id
 
   expect(res.status).toBe(201);

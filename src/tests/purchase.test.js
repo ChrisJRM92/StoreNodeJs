@@ -3,6 +3,7 @@ const app = require("../app");
 const Product = require("../models/Product");
 const Category = require("../models/Category");
 const Cart = require("../models/Cart");
+const Purchase = require("../models/Purchase");
 require('../models')
 
 let TOKEN
@@ -55,11 +56,17 @@ beforeAll(async()=>{
   cartId = cartCreate.id
 });
 
+afterAll(async () => {
+  await Category.destroy({ where: { id: categoryId } });
+  await Product.destroy({ where: { id: productId } });
+  // await Purchase.destroy({ where: { id: purchaseId } });
+});
+
 test("Create Post --> '/purchase' should return 201", async()=>{
   const res = await supertest(app).post(BASE_URL).send().set('Authorization', `Bearer ${TOKEN}`);
 
   expect(res.status).toBe(201);
-  console.log(res.body);
+  // console.log(res.body);
 });
 
 test("GetAll Get --> '/purchase' should return 200", async()=>{
@@ -72,7 +79,7 @@ test("GetAll Get --> '/purchase' should return 200", async()=>{
   expect(res.body[0].productId).toBe(productId);
   expect(res.body[0].product.categoryId).toBe(categoryId);
   expect(res.body[0].product.category.id).toBe(categoryId);
-  console.log(res.body[0]);
+  // console.log(res.body[0]);
 });
 
 test("Cart Empy --> '/cart' should empy array, status code 200", async()=>{

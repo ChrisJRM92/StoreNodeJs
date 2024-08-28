@@ -85,7 +85,7 @@ test("Update Put --> '/cart/:id' should return 200", async()=>{
   expect(res.status).toBe(200);
   expect(res.body).toBeDefined();
   expect(res.body.quantity).toBe(updateData.quantity);
-  console.log(res.body)
+  // console.log(res.body)
 });
 
 test("Delete delete --> '/cart/:id' should return 204", async()=>{

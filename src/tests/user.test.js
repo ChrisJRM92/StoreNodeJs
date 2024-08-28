@@ -1,7 +1,5 @@
 const supertest = require("supertest");
 const app = require("../app");
-// const User = require("../models/User");
-// const sequelize = require("../utils/connection");
 
 let TOKEN
 // let TOKEN2
@@ -29,13 +27,14 @@ const user = {
 test("Create Post --> Users, should return status code 201", async () => {
   const res = await supertest(app).post(BASE_URL).send(user);
   userId = res.body.id
+  // console.log(res)
   expect(res.status).toBe(201);
   expect(res.body).toBeDefined();
   expect(res.body.firstName).toBe(user.firstName);
 });
 
-test("Get --> BASE_URL should return status code 200 and res.body.length == 2", async()=>{
-  const res = await supertest(app).get(BASE_URL).set('authorization', `Bearer ${TOKEN}`);
+test("GetAll --> BASE_URL should return status code 200 and res.body.length == 2", async()=>{
+  const res = await supertest(app).get(BASE_URL).set('Authorization', `Bearer ${TOKEN}`);
   // console.log(res)
   expect(res.status).toBe(200);
   expect(res.body).toBeDefined();
